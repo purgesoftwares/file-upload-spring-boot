@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 @Controller
+@CrossOrigin
 public class FileUploadController {
 
     private final StorageService storageService;
@@ -63,8 +64,9 @@ public class FileUploadController {
         return "redirect:/";
     }
 
-    @PostMapping("/upload/")
+    @PostMapping("/upload")
     @ResponseBody
+    @CrossOrigin
     public String handleAPIFileUpload(@RequestParam("file") MultipartFile file) {
 
         storageService.store(file);
