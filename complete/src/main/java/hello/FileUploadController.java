@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Date;
 import java.util.stream.Collectors;
 
 @Controller
@@ -57,7 +58,8 @@ public class FileUploadController {
     public String handleFileUpload(@RequestParam("file") MultipartFile file,
                                    RedirectAttributes redirectAttributes) {
 
-        storageService.store(file);
+        String filename = new Date().getTime() + "-" + file.getOriginalFilename();
+        storageService.store(file, filename);
         redirectAttributes.addFlashAttribute("message",
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
@@ -69,9 +71,31 @@ public class FileUploadController {
     @CrossOrigin
     public String handleAPIFileUpload(@RequestParam("file") MultipartFile file) {
 
-        storageService.store(file);
-        Resource file1 = storageService.loadAsResource(file.getOriginalFilename());
-        return file.getOriginalFilename();
+        String filename = new Date().getTime() + "-" + file.getOriginalFilename();
+
+        /*String filename = new Date().getTime() + "-" + file.getOriginalFilename()
+         String filename = new Date().getTime() + "-" + file.getOriginalFilename();
+
+        if (!file.isEmpty()) {
+            try {
+
+                //This will be replaced when multipart data file request is working.
+                File outputFile = applicationContext.getResource("/resources/uploads/" + filename).getFile();
+
+                byte[] bytes = file.getBytes();
+                BufferedOutputStream stream =
+                        new BufferedOutputStream(new FileOutputStream(outputFile));
+                stream.write(bytes);
+                stream.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        */
+        storageService.store(file, filename);
+        //Resource file1 = storageService.loadAsResource(file.getOriginalFilename());
+        return filename;
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)

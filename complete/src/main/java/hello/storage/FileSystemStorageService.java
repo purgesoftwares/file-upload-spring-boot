@@ -22,15 +22,16 @@ public class FileSystemStorageService implements StorageService {
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
         this.rootLocation = Paths.get(properties.getLocation());
+        System.out.println(this.rootLocation);
     }
 
     @Override
-    public void store(MultipartFile file) {
+    public void store(MultipartFile file, String filename) {
         try {
             if (file.isEmpty()) {
                 throw new StorageException("Failed to store empty file " + file.getOriginalFilename());
             }
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
+            Files.copy(file.getInputStream(), this.rootLocation.resolve(filename));
         } catch (IOException e) {
             throw new StorageException("Failed to store file " + file.getOriginalFilename(), e);
         }
