@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.stream.Collectors;
 
 @Controller
@@ -60,6 +61,15 @@ public class FileUploadController {
                 "You successfully uploaded " + file.getOriginalFilename() + "!");
 
         return "redirect:/";
+    }
+
+    @PostMapping("/upload/")
+    @ResponseBody
+    public String handleAPIFileUpload(@RequestParam("file") MultipartFile file) {
+
+        storageService.store(file);
+        Resource file1 = storageService.loadAsResource(file.getOriginalFilename());
+        return file.getOriginalFilename();
     }
 
     @ExceptionHandler(StorageFileNotFoundException.class)
